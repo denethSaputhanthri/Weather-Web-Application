@@ -1,12 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SLWeather.lk</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>    
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden"
+  >
+    <!-- Lightning Background Animation -->
+    <div class="lightning-bg absolute inset-0 pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-yellow-400 mb-2">SLWeather.lk</h1>
+        <h3 class="text-xl text-gray-300">
+          Your Ultimate Weather Companion in Sri Lanka
+        </h3>
+        <div class="mt-6 flex justify-center">
+          <input
+            type="text"
+            id="searchInput"
+            class="px-4 py-2 rounded-l-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            placeholder="Enter city name"/>
+          <button id="searchButton"class="px-6 py-2 bg-yellow-400 text-black rounded-r-lg hover:bg-yellow-500 transition duration-300" onclick="Search()">
+            Search
+          </button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+        <!-- Location Info -->
+        <div class="bg-gray-800 bg-opacity-50 rounded-lg p-6 backdrop-blur-sm">
+          <h3 class="text-2xl font-semibold mb-4 text-yellow-400">Location</h3>
+          <div class="space-y-2">
+            <p>
+              <span class="font-medium">City:</span> <span id="name"></span>
+            </p>
+            <p>
+              <span class="font-medium">Region:</span> <span id="region"></span>
+            </p>
+            <p>
+              <span class="font-medium">Country:</span>
+              <span id="country"></span>
+            </p>
+            <p>
+              <span class="font-medium">Latitude:</span> <span id="lat"></span>
+            </p>
+            <p>
+              <span class="font-medium">Local Time:</span>
+              <span id="localtime"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Weather Info -->
+        <div class="bg-gray-800 bg-opacity-50 rounded-lg p-6 backdrop-blur-sm">
+          <h3 class="text-2xl font-semibold mb-4 text-yellow-400">
+            Current Weather
+          </h3>
+          <div class="text-center mb-4">
+            <div id="condition_icon" class="mb-2"></div>
+            <p class="text-4xl font-bold" id="temp_c"></p>
+            <p class="text-sm text-gray-400" id="temp_f"></p>
+          </div>
+          <div class="space-y-2">
+            <p>
+              <span class="font-medium">Condition:</span>
+              <span id="condition_text"></span>
+            </p>
+            <p>
+              <span class="font-medium">Last Updated:</span>
+              <span id="last_updated"></span>
+            </p>
+            <p>
+              <span class="font-medium">Wind:</span>
+              <span id="wind_kph"></span> kph
+            </p>
+            <p>
+              <span class="font-medium">Humidity:</span>
+              <span id="humidity"></span>%
+            </p>
+            <p>
+              <span class="font-medium">Feels Like:</span>
+              <span id="feelslike_c"></span>°C
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+        <input type="text" id="apiKeyInput" placeholder="Enter your API Key" class="fixed bottom-4 left-4 px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"/>
+    </div>
+
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
