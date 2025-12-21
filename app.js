@@ -41,7 +41,4 @@ function Search() {
     }
   });
 }
-   setTimeout(() => {
-    document.getElementById("searchInput").value = "Colombo";
-    Search();
-  }, 1000);
+ 
