@@ -1,12 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLWeather.lk</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weatherhub.com</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <!-- Three.js Canvas for Lightning Effects -->
+    <canvas id="threejs-canvas"></canvas>
+    
+    <!-- Main Content -->
+    <div class="relative min-h-screen">
+        <!-- Animated Clouds Background -->
+        <div class="absolute inset-0 overflow-hidden opacity-20">
+            <div class="cloud cloud-1 floating"></div>
+            <div class="cloud cloud-2 floating" style="animation-delay: -2s;"></div>
+            <div class="cloud cloud-3 floating" style="animation-delay: -4s;"></div>
+        </div>
+        
+        <!-- Main Container -->
+        <div class="container mx-auto px-4 py-8 relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="flex flex-col items-center justify-center mb-6">
+                    <div class="w-20 h-20 rounded-full glass-effect flex items-center justify-center mb-4">
+                        <svg class="w-10 h-10 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold gradient-text mb-2 glow">Weather Hub</h1>
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        Real-time weather intelligence for world. 
+                        Stay ahead of the storm.
+                    </p>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="max-w-2xl mx-auto mb-12">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-2xl blur-xl"></div>
+                        <div class="relative flex items-center">
+                            <div class="flex-1">
+                                <input
+                                    type="text"
+                                    id="searchInput"
+                                    class="w-full px-6 py-4 rounded-2xl search-input text-white placeholder-gray-400 text-lg focus:outline-none"
+                                    placeholder="Search any city in Sri Lanka..."
+                                />
+                            </div>
+                            <button
+                                id="searchButton"
+                                onclick="Search()"
+                                class="ml-4 px-8 py-4 rounded-2xl btn-primary text-black font-semibold text-lg flex items-center space-x-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <span>Search</span>
+                            </button>
+                        </div>
+                        <div class="mt-4 flex justify-center space-x-4">
+                            <button class="px-4 py-2 rounded-full glass-effect text-sm hover:bg-yellow-400/10 transition-all duration-300" onclick="quickSearch('Colombo')">Colombo</button>
+                            <button class="px-4 py-2 rounded-full glass-effect text-sm hover:bg-yellow-400/10 transition-all duration-300" onclick="quickSearch('Kandy')">Kandy</button>
+                            <button class="px-4 py-2 rounded-full glass-effect text-sm hover:bg-yellow-400/10 transition-all duration-300" onclick="quickSearch('Galle')">Galle</button>
+                            <button class="px-4 py-2 rounded-full glass-effect text-sm hover:bg-yellow-400/10 transition-all duration-300" onclick="quickSearch('Jaffna')">Jaffna</button>
+                            <button class="px-4 py-2 rounded-full glass-effect text-sm hover:bg-yellow-400/10 transition-all duration-300" onclick="quickSearch('Panadura')">Panadura</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weather Dashboard -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Location Card -->
+                <div class="weather-card glass-effect p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-yellow-400 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            Location Details
+                        </h2>
+                        <div class="px-3 py-1 rounded-full bg-yellow-400/10 text-yellow-400 text-sm font-medium">
+                            <span id="timezone"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-black/20">
+                                <p class="text-gray-400 text-sm mb-1">City</p>
+                                <p id="name" class="text-xl font-semibold">-</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/20">
+                                <p class="text-gray-400 text-sm mb-1">Region</p>
+                                <p id="region" class="text-xl font-semibold">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-black/20">
+                                <p class="text-gray-400 text-sm mb-1">Country</p>
+                                <p id="country" class="text-xl font-semibold">-</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/20">
+                                <p class="text-gray-400 text-sm mb-1">Local Time</p>
+                                <p id="localtime" class="text-xl font-semibold">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-r from-yellow-400/10 to-orange-500/10 border border-yellow-400/20">
+                            <p class="text-gray-400 text-sm mb-1">Coordinates</p>
+                            <div class="flex items-center space-x-4">
+                                <div>
+                                    <p class="text-sm text-gray-300">Latitude</p>
+                                    <p id="lat" class="text-lg font-bold">-</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-600"></div>
+                                <div>
+                                    <p class="text-sm text-gray-300">Longitude</p>
+                                    <p id="lon" class="text-lg font-bold">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Weather Card -->
+                <div class="weather-card glass-effect p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-yellow-400 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M5 3a1 1 0 000 2c5.523 0 10 4.477 10 10a1 1 0 102 0C17 8.373 11.627 3 5 3z"/>
+                                <path d="M5 7a1 1 0 000 2 6 6 0 016 6 1 1 0 102 0 8 8 0 00-8-8z"/>
+                            </svg>
+                            Current Weather
+                        </h2>
+                        <div class="px-3 py-1 rounded-full bg-blue-400/10 text-blue-400 text-sm font-medium">
+                            <span id="last_updated">Last updated: -</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-center mb-8">
+                        <div id="condition_icon" class="mb-4 w-24 h-24 flex items-center justify-center">
+                            <div class="text-6xl">⛅</div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-6xl font-bold mb-2" id="temp_c">-°C</p>
+                            <p class="text-gray-400" id="condition_text">-</p>
+                            <p class="text-sm text-gray-500 mt-1" id="temp_f">-°F</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-black/20">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-blue-400/10">
+                                    <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Wind Speed</p>
+                                    <p class="text-xl font-semibold" id="wind_kph">- kph</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-black/20">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-green-400/10">
+                                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Humidity</p>
+                                    <p class="text-xl font-semibold" id="humidity">- %</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-black/20">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-red-400/10">
+                                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Feels Like</p>
+                                    <p class="text-xl font-semibold" id="feelslike_c">- °C</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-black/20">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-purple-400/10">
+                                    <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm">Pressure</p>
+                                    <p class="text-xl font-semibold" id="pressure_mb">- mb</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Forecast Section -->
+            <div class="max-w-6xl mx-auto mt-12">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    3-Day Forecast
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="weather-card glass-effect p-6 text-center">
+                        <p class="text-gray-400 mb-2">Tomorrow</p>
+                        <div class="text-4xl mb-2">☀️</div>
+                        <p class="text-2xl font-bold">32°C</p>
+                        <p class="text-gray-400 text-sm">Sunny</p>
+                    </div>
+                    <div class="weather-card glass-effect p-6 text-center">
+                        <p class="text-gray-400 mb-2">Day 2</p>
+                        <div class="text-4xl mb-2">⛈️</div>
+                        <p class="text-2xl font-bold">28°C</p>
+                        <p class="text-gray-400 text-sm">Thunderstorms</p>
+                    </div>
+                    <div class="weather-card glass-effect p-6 text-center">
+                        <p class="text-gray-400 mb-2">Day 3</p>
+                        <div class="text-4xl mb-2">🌧️</div>
+                        <p class="text-2xl font-bold">26°C</p>
+                        <p class="text-gray-400 text-sm">Rainy</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Key Input -->
+            <div class="fixed bottom-4 left-4 right-4 md:right-auto md:w-80">
+                <div class="relative">
+                    <input
+                        type="text"
+                        id="apiKeyInput"
+                        placeholder="Enter Weather API Key"
+                        class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 pr-12"
+                    />
+                    <button onclick="saveApiKey()" class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 rounded-lg bg-yellow-400/20 text-yellow-400 text-sm hover:bg-yellow-400/30 transition-colors">
+                        Save
+                    </button>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Get your API key from weatherapi.com</p>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="text-center mt-12 pt-8 border-t border-gray-800">
+                <p class="text-gray-400">
+                    © 2024 Weather. • Real-time weather data powered by WeatherAPI.com
+                </p>
+            </footer>
+        </div>
+    </div>
+
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
